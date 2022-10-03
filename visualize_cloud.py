@@ -7,8 +7,8 @@ import sys
 if __name__ == "__main__":
 
     ## define parameters
-    filename = "output/output9.xyz"
-    min_z = 3000
+    filename = "output/output.xyz"
+    min_z = 200
 
     if len(sys.argv) > 1:
         filename = sys.argv[1]
