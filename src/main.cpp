@@ -39,11 +39,11 @@ int main(int argc, char** argv) {
     omp_set_num_threads(nProcessors);
 
     // camera setup parameters
-    const double focal_length = 1247;
-    const double baseline = 213;
+    const double focal_length = 3740;
+    const double baseline = 160;
 
     // stereo estimation parameters
-    const int dmin = 67;
+    const int dmin = 200;
 
     ///////////////////////////
     // Commandline arguments //
@@ -248,13 +248,14 @@ void Disparity2PointCloud(
         for (int j = 0; j < width - window_size; ++j) {
             if (disparities.at<uchar>(i, j) == 0) continue;
 
-            int d = (int)disparities.at<uchar>(i, j);
-            int u1 = i;
-            int u2 = i - d;
+            int d = (int)disparities.at<uchar>(i, j) + dmin;
+            int u1 = j - width/2;
+            int u2 = j + d - width/2;
+	    int v1 = i - height/2;
 
             const double Z = baseline * focal_length / d;
             const double X = -0.5 * ( baseline * (u1 + u2) ) / d;
-            const double Y = baseline * j / d;;
+            const double Y = baseline * v1 / d;
             outfile << X << " " << Y << " " << Z << std::endl;
         }
     }

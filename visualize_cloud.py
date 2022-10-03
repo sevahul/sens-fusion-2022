@@ -8,7 +8,7 @@ if __name__ == "__main__":
 
     ## define parameters
     filename = "output/output.xyz"
-    min_z = 200
+    min_z = 2000
 
     if len(sys.argv) > 1:
         filename = sys.argv[1]
@@ -25,7 +25,7 @@ if __name__ == "__main__":
 
     ## filter points noise 
     voxel_down_pcd = cl.voxel_down_sample(voxel_size=0.02)
-    cl, ind = voxel_down_pcd.remove_radius_outlier(nb_points=50, radius=50) # radius filter
+    cl, ind = voxel_down_pcd.remove_radius_outlier(nb_points=15, radius=5) # radius filter
     #cl, ind = voxel_down_pcd.remove_statistical_outlier(nb_neighbors=50, std_ratio=.2) # statistical filter
 
     ## visualize points
