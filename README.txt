@@ -7,6 +7,8 @@ default values:
  window_size: 3
  n_jobs: 0 (all threads)
 
+camera parameters (`focal_length`, `baseline`, `dmin`) are read from `data/config.json` file
+
 
 To visualize a pointcloud:
 ```
@@ -23,3 +25,11 @@ To calculate the similarity between disparities and disparitu groundtruth, run:
 
 It will output the list of values for each metric. In list, values are compared for different window size (3, 5, 7, 9)
 You can see the result saved in `output/metrics.txt`
+
+
+REQUIREMENTS:
+- jsoncpp library, libboost library.
+INSTALLATION on Linux:
+```
+sudo apt-get install libjsoncpp-dev libopencv-dev python3-opencv
+```

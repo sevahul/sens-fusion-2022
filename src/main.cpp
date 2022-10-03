@@ -1,3 +1,5 @@
+#include <jsoncpp/json/reader.h>
+#include <jsoncpp/json/value.h>
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <string>
@@ -8,6 +10,8 @@
 #include <omp.h>
 #include <boost/program_options.hpp> // COMMENT IN CASE YOU DONT HAVE BOOST
 #include <chrono>
+#include <jsoncpp/json/json.h>
+
 namespace po = boost::program_options;
 namespace ch = std::chrono;
 
@@ -39,11 +43,16 @@ int main(int argc, char** argv) {
     omp_set_num_threads(nProcessors);
 
     // camera setup parameters
-    const double focal_length = 3740;
-    const double baseline = 160;
+    std::ifstream ifs("data/config.json");
+    Json::Reader reader;
+    Json::Value obj;
+    reader.parse(ifs, obj);
+
+    const double focal_length = obj["focal_length"].asDouble();
+    const double baseline = obj["baseline"].asDouble();
 
     // stereo estimation parameters
-    const int dmin = 200;
+    const int dmin = obj["dmin"].asInt();
 
     ///////////////////////////
     // Commandline arguments //
