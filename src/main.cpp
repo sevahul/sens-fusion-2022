@@ -3,6 +3,7 @@
 #include <jsoncpp/json/value.h>
 #include <opencv2/opencv.hpp>
 #include <iostream>
+#include <ostream>
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -17,17 +18,24 @@ namespace po = boost::program_options;
 namespace ch = std::chrono;
 
 int main(int argc, char** argv) {
+    std::ifstream ifs("data/config.json");
+    Json::Reader reader;
+    Json::Value obj;
+    reader.parse(ifs, obj);
+
+
 
     // Optionally set nProcessors (maximum by default)
     int nProcessors = 0;
     // And window size
-    int window_size = 3;
+    int default_ws = obj.isMember("default_window_size") ? obj["default_window_size"].asInt() : 3;
+    int window_size;
 
     // COMMENT THE NEXT BLOCK IN CASE YOU DONT HAVE BOOST
     po::options_description desc("Options for my program");
     desc.add_options()
     ("jobs,j", po::value<int>(& nProcessors)->default_value(omp_get_max_threads()), "Number of Threads")
-    ("window-size,w", po::value<int>(& window_size)->default_value(3), "Window Size");
+    ("window-size,w", po::value<int>(& window_size)->default_value(default_ws), "Window Size");
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
     po::notify(vm);
@@ -44,16 +52,13 @@ int main(int argc, char** argv) {
     omp_set_num_threads(nProcessors);
 
     // camera setup parameters
-    std::ifstream ifs("data/config.json");
-    Json::Reader reader;
-    Json::Value obj;
-    reader.parse(ifs, obj);
-
-    const double focal_length = obj["focal_length"].asDouble();
-    const double baseline = obj["baseline"].asDouble();
-
+    const double focal_length = obj.isMember("focal_length") ? obj["focal_length"].asDouble(): 3740;
+    const double baseline = obj.isMember("baseline") ? obj["baseline"].asDouble(): 160;
+    const double lambda = obj.isMember("lambda") ? obj["lambda"].asDouble() : 0.1;
+    const std::string method = obj.isMember("method") ? obj["method"].asString() : "naive";
+ 
     // stereo estimation parameters
-    const int dmin = obj["dmin"].asInt();
+    const int dmin = obj.isMember("dmin") ? obj["dmin"].asInt(): 200;
 
     ///////////////////////////
     // Commandline arguments //
@@ -89,20 +94,35 @@ int main(int argc, char** argv) {
 
     int height = image1.size().height;
     int width = image1.size().width;
+    if (method == "DP"){ 
+    	std::cout << "lambda = " << lambda << std::endl;  
+    }
+    std::cout << "height " << height << std::endl;
+    std::cout << "width " << width << std::endl;   
+    std::cout << "method = " << method << std::endl;
 
     ////////////////////
     // Reconstruction //
     ////////////////////
 
     // Naive disparity image
-    //cv::Mat naive_disparities = cv::Mat::zeros(height - window_size, width - window_size, CV_8UC1);
-    cv::Mat naive_disparities = cv::Mat::zeros(height, width, CV_8UC1);
+    //cv::Mat disparities = cv::Mat::zeros(height - window_size, width - window_size, CV_8UC1);
+    cv::Mat disparities = cv::Mat::zeros(height, width, CV_8UC1);
 
-    //StereoEstimation_Naive(
-    StereoEstimation_DP(
-        window_size, dmin, height, width,
-        image1, image2,
-        naive_disparities, 0);
+    if(method=="naive"){
+	 StereoEstimation_Naive(
+            window_size, dmin, height, width,
+            image1, image2,
+            disparities);
+    } else if (method == "DP"){
+	StereoEstimation_DP(
+            window_size, dmin, height, width,
+            image1, image2,
+            disparities, lambda);
+    } else {
+       std::cerr << "Unknown method!" << std::endl;
+       exit(0);
+    }
 
     ////////////
     // Output //
@@ -111,16 +131,16 @@ int main(int argc, char** argv) {
     // reconstruction
     Disparity2PointCloud(
         output_file,
-        height, width, naive_disparities,
+        height, width, disparities,
         window_size, dmin, baseline, focal_length);
 
     // save / display images
     std::stringstream out1;
     out1 << output_file << "_naive.png";
-    cv::imwrite(out1.str(), naive_disparities);
+    cv::imwrite(out1.str(), disparities);
 
     cv::namedWindow("Naive", cv::WINDOW_AUTOSIZE);
-    cv::imshow("Naive", naive_disparities);
+    cv::imshow("Naive", disparities);
 
     cv::waitKey(0);
 
@@ -133,10 +153,8 @@ void StereoEstimation_DP(
     const int& dmin,
     int height,
     int width,
-    cv::Mat& image1, cv::Mat& image2, cv::Mat& naive_disparities, double lambda)
+    cv::Mat& image1, cv::Mat& image2, cv::Mat& disparities, double lambda)
 {
-    std::cout << "height " << height << std::endl;
-    std::cout << "width " << width << std::endl;
     int half_window_size = window_size / 2;
 
     auto start = ch::high_resolution_clock::now();
@@ -195,11 +213,11 @@ void StereoEstimation_DP(
 	while ((j >= 0) && (i>=0)){
 	    switch (M.at<uchar>(i, j)) {
 		case 0:
-		    naive_disparities.at<uchar>(y, i) = std::abs(j - i);
+		    disparities.at<uchar>(y, i) = std::abs(j - i);
 		    i--; j--;
 		    break;
  		case 1:
-		    naive_disparities.at<uchar>(y, i) = std::abs(j - i);
+		    disparities.at<uchar>(y, i) = std::abs(j - i);
 		    i--;
   		    break;
 		case 2:
@@ -211,24 +229,7 @@ void StereoEstimation_DP(
 	    }
 	}		
     }
-
-
-
       
-    // populate C, M (dynamic programming ... recursive function evaluation)
-    //   initialize C and M (you can do it outside of for loop in case no parallel computing)
-    //     first row
-    //     first column
-    //     (these do not have preceding nodes)
-    // for(horizontally...)
-    //   for(vertically...)
-    //
-    // trace sink -> source (from bottom-right to top-left of C/M)
-    //   fill y-th row of disparities
-    //   d = j-i
-    //
-    //
-
     auto stop = ch::high_resolution_clock::now();
     auto duration = ch::duration_cast<ch::seconds>(stop - start);
 
@@ -244,7 +245,7 @@ void StereoEstimation_Naive(
     const int& dmin,
     int height,
     int width,
-    cv::Mat& image1, cv::Mat& image2, cv::Mat& naive_disparities)
+    cv::Mat& image1, cv::Mat& image2, cv::Mat& disparities)
 {
     std::cout << "height " << height << std::endl;
     std::cout << "width " << width << std::endl;
@@ -280,7 +281,7 @@ void StereoEstimation_Naive(
                 }
             }
 
-            naive_disparities.at<uchar>(i - half_window_size, j - half_window_size) = std::abs(disparity);
+            disparities.at<uchar>(i - half_window_size, j - half_window_size) = std::abs(disparity);
         }
     }
 
