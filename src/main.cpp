@@ -1,3 +1,4 @@
+#include <cstdint>
 #include <jsoncpp/json/reader.h>
 #include <jsoncpp/json/value.h>
 #include <opencv2/opencv.hpp>
@@ -97,10 +98,11 @@ int main(int argc, char** argv) {
     //cv::Mat naive_disparities = cv::Mat::zeros(height - window_size, width - window_size, CV_8UC1);
     cv::Mat naive_disparities = cv::Mat::zeros(height, width, CV_8UC1);
 
-    StereoEstimation_Naive(
+    //StereoEstimation_Naive(
+    StereoEstimation_DP(
         window_size, dmin, height, width,
         image1, image2,
-        naive_disparities);
+        naive_disparities, 0);
 
     ////////////
     // Output //
@@ -131,7 +133,7 @@ void StereoEstimation_DP(
     const int& dmin,
     int height,
     int width,
-    cv::Mat& image1, cv::Mat& image2, cv::Mat& naive_disparities)
+    cv::Mat& image1, cv::Mat& image2, cv::Mat& naive_disparities, double lambda)
 {
     std::cout << "height " << height << std::endl;
     std::cout << "width " << width << std::endl;
@@ -139,11 +141,17 @@ void StereoEstimation_DP(
 
     auto start = ch::high_resolution_clock::now();
     cv::Mat dissim = cv::Mat::zeros(width, width, CV_32FC1);
+    
+    
     // for each row (scanline)
-    std::cout << "calculating the disparities using DP approach" << std::endl;
-    // dissimilarity(i, j) for each (i, j)
-
     for (int y = 0; y < height; y++) {
+	
+  	std::cout
+                << "Calculating disparities for the naive approach... "
+                << std::ceil(y / static_cast<double>(height) * 100) << "%\r"
+                << std::flush;
+	// dissimilarity(i, j) for each (i, j)		
+	#pragma omp parallel for
         for (int i = half_window_size; i < height - half_window_size; ++i) {
             for (int j = half_window_size; j < width - half_window_size; j++) {
                 float sum = 0;
@@ -157,16 +165,56 @@ void StereoEstimation_DP(
                 }
                 dissim.at<float>(i, j) = sum;
             }
-
-
         }
+	
+	// allocate C, M
+	cv::Mat C = cv::Mat::zeros(width, width, CV_32FC1);
+    	cv::Mat M = cv::Mat::zeros(width, width, CV_8UC1);
+	C(cv::Range(0, 1), cv::Range(0, width)) = dissim(cv::Range(0, 1), cv::Range(0, width));
+        C(cv::Range(0, width), cv::Range(0, 1)) = dissim(cv::Range(0, width), cv::Range(0, 1));
+	// loop over matricies
+	for (int i = 1; i < width; i++) {
+	    for (int j = 1; j < width; j++) {
+		M.at<uint8_t>(i, j) = 0;
+		double value = C.at<float>(i-1, j-1) + dissim.at<float>(i, j);
+		if (value > C.at<float>(i-1, j) + lambda) {
+		    value = C.at<float>(i-1, j) + lambda;
+		    M.at<uint8_t>(i, j) = 1;
+		}
+		if (value > C.at<float>(i, j-1) + lambda) {	
+		    value = C.at<float>(i, j-1) + lambda;
+		    M.at<uint8_t>(i, j) = 2;
+		}
+		C.at<float>(i, j) = value;
+	    }
+	}
+	
+	// trace back
+	int j = width;
+        int i = width;
+	while ((j >= 0) && (i>=0)){
+	    switch (M.at<uchar>(i, j)) {
+		case 0:
+		    naive_disparities.at<uchar>(y, i) = std::abs(j - i);
+		    i--; j--;
+		    break;
+ 		case 1:
+		    naive_disparities.at<uchar>(y, i) = std::abs(j - i);
+		    i--;
+  		    break;
+		case 2:
+		    j--;
+		    break;
+		default:
+		    std::cout << "Unexpected case!" << std::endl;
+		    exit(0);
+	    }
+	}		
     }
 
 
 
-    cv::Mat C = cv::Mat::zeros(width, width, CV_32FC1);
-    cv::Mat M = cv::Mat::zeros(width, width, CV_8UC1);
-    // allocate C, M
+      
     // populate C, M (dynamic programming ... recursive function evaluation)
     //   initialize C and M (you can do it outside of for loop in case no parallel computing)
     //     first row
