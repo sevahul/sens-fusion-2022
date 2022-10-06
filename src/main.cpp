@@ -1,4 +1,6 @@
+#include <cstddef>
 #include <cstdint>
+#include <cstdlib>
 #include <jsoncpp/json/reader.h>
 #include <jsoncpp/json/value.h>
 #include <opencv2/opencv.hpp>
@@ -13,25 +15,30 @@
 #include <boost/program_options.hpp> // COMMENT IN CASE YOU DONT HAVE BOOST
 #include <chrono>
 #include <jsoncpp/json/json.h>
+#include "progressbar.hpp"
 
 namespace po = boost::program_options;
 namespace ch = std::chrono;
 
 int main(int argc, char** argv) {
+    
+    ////////////////
+    // Parameters //
+    ////////////////
+    
+    // parameters config parser
     std::ifstream ifs("data/config.json");
     Json::Reader reader;
     Json::Value obj;
     reader.parse(ifs, obj);
 
-
-
     // Optionally set nProcessors (maximum by default)
     int nProcessors = 0;
     // And window size
-    int default_ws = obj.isMember("default_window_size") ? obj["default_window_size"].asInt() : 3;
+    int default_ws = obj.isMember("window_size") ? obj["window_size"].asInt() : 3;
     int window_size;
 
-    // COMMENT THE NEXT BLOCK IN CASE YOU DONT HAVE BOOST
+    // Read parameters from command line (higher priority)
     po::options_description desc("Options for my program");
     desc.add_options()
     ("jobs,j", po::value<int>(& nProcessors)->default_value(omp_get_max_threads()), "Number of Threads")
@@ -39,11 +46,6 @@ int main(int argc, char** argv) {
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
     po::notify(vm);
-
-
-    ////////////////
-    // Parameters //
-    ////////////////
 
     // setup njobs
     if (!nProcessors) {
@@ -54,9 +56,9 @@ int main(int argc, char** argv) {
     // camera setup parameters
     const double focal_length = obj.isMember("focal_length") ? obj["focal_length"].asDouble(): 3740;
     const double baseline = obj.isMember("baseline") ? obj["baseline"].asDouble(): 160;
-    const double lambda = obj.isMember("lambda") ? obj["lambda"].asDouble() : 0.1;
     const bool debug = obj.isMember("debug") ? obj["debug"].asBool() : false;
     const std::string method = obj.isMember("method") ? obj["method"].asString() : "naive";
+    const double lambda = obj.isMember("lambda_DP") ? obj["lambda_DP"].asDouble()*window_size*window_size : 0;
  
     // stereo estimation parameters
     const int dmin = obj.isMember("dmin") ? obj["dmin"].asInt(): 200;
@@ -65,14 +67,20 @@ int main(int argc, char** argv) {
     // Commandline arguments //
     ///////////////////////////
 
-    if (argc < 4) {
+    if (argc < 3) {
         std::cerr << "Usage: " << argv[0] << " IMAGE1 IMAGE2 OUTPUT_FILE [-j<njobs> -w<window-size>]" << std::endl;
         return 1;
     }
 
     cv::Mat image1 = cv::imread(argv[1], cv::IMREAD_GRAYSCALE);
     cv::Mat image2 = cv::imread(argv[2], cv::IMREAD_GRAYSCALE);
-    const std::string output_file = argv[3];
+    std::string output_file;
+    if (argc > 3){
+	output_file = argv[3]; 
+    } else {
+	output_file = obj.isMember("output") ? obj["output"].asString() : "output/output";
+    }
+
 
     if (!image1.data) {
         std::cerr << "No image1 data" << std::endl;
@@ -83,36 +91,39 @@ int main(int argc, char** argv) {
         std::cerr << "No image2 data" << std::endl;
         return EXIT_FAILURE;
     }
-
+    
+    
+    int height = image1.size().height;
+    int width = image1.size().width;
+    
     std::cout << "------------------ Parameters -------------------" << std::endl;
     std::cout << "focal_length = " << focal_length << std::endl;
     std::cout << "baseline = " << baseline << std::endl;
     std::cout << "window_size = " << window_size << std::endl;
     std::cout << "disparity added due to image cropping = " << dmin << std::endl;
-    std::cout << "output filename = " << argv[3] << std::endl;
+    std::cout << "output filename = " << output_file << std::endl;
     std::cout << "nProcessors = " << nProcessors << std::endl;
     std::cout << "-------------------------------------------------" << std::endl;
 
-    int height = image1.size().height;
-    int width = image1.size().width;
-    if (method == "DP"){ 
-    	std::cout << "lambda = " << lambda << std::endl;
-	std::cout << "debug = " << debug << std::endl;
-  
-    }
     std::cout << "height " << height << std::endl;
     std::cout << "width " << width << std::endl;   
     std::cout << "method = " << method << std::endl;
+    if (method == "DP"){ 
+    	std::cout << "lambda = " << (int)(lambda/window_size/window_size) << std::endl;
+    	std::cout << "lambda*window_size^2 = " << lambda << std::endl;
+	std::cout << "debug = " << debug << std::endl; 
+    }
+     std::cout << "-------------------------------------------------" << std::endl;
+
 
     ////////////////////
     // Reconstruction //
     ////////////////////
 
-    // Naive disparity image
-    //cv::Mat disparities = cv::Mat::zeros(height - window_size, width - window_size, CV_8UC1);
+    // Disparity image
     cv::Mat disparities = cv::Mat::zeros(height, width, CV_8UC1);
 
-    if(method=="naive"){
+    if (method=="naive") {
 	 StereoEstimation_Naive(
             window_size, dmin, height, width,
             image1, image2,
@@ -124,14 +135,14 @@ int main(int argc, char** argv) {
             disparities, lambda, debug);
     } else {
        std::cerr << "Unknown method!" << std::endl;
-       exit(0);
+       return EXIT_FAILURE;
     }
 
     ////////////
     // Output //
     ////////////
 
-    // reconstruction
+    // Reconstruction
     Disparity2PointCloud(
         output_file,
         height, width, disparities,
@@ -139,11 +150,11 @@ int main(int argc, char** argv) {
 
     // save / display images
     std::stringstream out1;
-    out1 << output_file << "_naive.png";
+    out1 << output_file << "_" << method << ".png";
     cv::imwrite(out1.str(), disparities);
 
-    cv::namedWindow("Naive", cv::WINDOW_AUTOSIZE);
-    cv::imshow("Naive", disparities);
+    cv::namedWindow("Disaparities_" + method, cv::WINDOW_AUTOSIZE);
+    cv::imshow("Disaparities_" + method, disparities);
 
     cv::waitKey(0);
 
@@ -162,18 +173,21 @@ void StereoEstimation_DP(
 	
     auto start = ch::high_resolution_clock::now();
     int dwidth = width - 2*half_window_size;
-    cv::Mat dissim = cv::Mat::zeros(dwidth, dwidth, CV_32FC1);
+
+    progressbar bar(height);
     
     
     // for each row (scanline)
+    std::cout << "Calculating disparities for the DP approach... " << std::endl;
+
+    #pragma omp parallel for
     for (int y = 0; y < height; y++) {
-	
-  	std::cout
-                << "Calculating disparities for the DP approach... "
-                << std::ceil(y / static_cast<double>(height) * 100) << "%\r"
-                << std::flush;
-	// dissimilarity(i, j) for each (i, j)		
-	#pragma omp parallel for
+
+	#pragma omp critical
+		bar.update();
+
+    	cv::Mat dissim = cv::Mat::zeros(dwidth, dwidth, CV_32FC1);
+
         for (int i = half_window_size; i < width - half_window_size; ++i) {
             for (int j = half_window_size; j < width - half_window_size; j++) {
                 float sum = 0;
@@ -188,7 +202,6 @@ void StereoEstimation_DP(
                 dissim.at<float>(i - half_window_size, j - half_window_size) = sum;
             }
         }
-	//std::cout << dissim << std::endl;
 	
 	// allocate C, M
 	
@@ -211,11 +224,11 @@ void StereoEstimation_DP(
 		}
 		C.at<float>(i, j) = value;
 	    }
-	}
+ 	}
 	
 	// trace back
-	int j = width - 1;
-        int i = width - 1;
+	int j = dwidth - 1;
+        int i = dwidth - 1;
 	cv::Mat path = cv::Mat::zeros(dwidth, dwidth, CV_8UC1);
 	while ((j >= 0) && (i>=0)){
 	    path.at<uchar>(i, j) = 255;
@@ -225,7 +238,7 @@ void StereoEstimation_DP(
 		    i--; j--;
 		    break;
  		case 1:
-		    disparities.at<uchar>(y, i + half_window_size) = 0;
+		    disparities.at<uchar>(y, i + half_window_size) = std::abs(j - i);
 		    i--;
   		    break;
 		case 2:
@@ -261,7 +274,7 @@ void StereoEstimation_DP(
     auto stop = ch::high_resolution_clock::now();
     auto duration = ch::duration_cast<ch::seconds>(stop - start);
 
-    std::cout << "Calculating disparities for the naive approach... Done in " << duration.count() << " seconds.\r" << std::flush;
+    std::cout << std::endl << "Done in " << duration.count() << " seconds.\r" << std::flush;
     std::cout << std::endl;
 }
 
