@@ -2,8 +2,9 @@
 	"dmin": 200,
 	"focal_length": 3740,
 	"baseline": 160,
-	"lambda": 0.1,
+	"lambda": 2.0,
 	"method": "DP",
-	"default_window_size": 3,
-	"default_output": "output/output"
+	"default_window_size": 1,
+	"default_output": "output/output", 
+	"debug": false
 }

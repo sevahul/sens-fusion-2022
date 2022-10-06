@@ -55,6 +55,7 @@ int main(int argc, char** argv) {
     const double focal_length = obj.isMember("focal_length") ? obj["focal_length"].asDouble(): 3740;
     const double baseline = obj.isMember("baseline") ? obj["baseline"].asDouble(): 160;
     const double lambda = obj.isMember("lambda") ? obj["lambda"].asDouble() : 0.1;
+    const bool debug = obj.isMember("debug") ? obj["debug"].asBool() : false;
     const std::string method = obj.isMember("method") ? obj["method"].asString() : "naive";
  
     // stereo estimation parameters
@@ -95,7 +96,9 @@ int main(int argc, char** argv) {
     int height = image1.size().height;
     int width = image1.size().width;
     if (method == "DP"){ 
-    	std::cout << "lambda = " << lambda << std::endl;  
+    	std::cout << "lambda = " << lambda << std::endl;
+	std::cout << "debug = " << debug << std::endl;
+  
     }
     std::cout << "height " << height << std::endl;
     std::cout << "width " << width << std::endl;   
@@ -118,7 +121,7 @@ int main(int argc, char** argv) {
 	StereoEstimation_DP(
             window_size, dmin, height, width,
             image1, image2,
-            disparities, lambda);
+            disparities, lambda, debug);
     } else {
        std::cerr << "Unknown method!" << std::endl;
        exit(0);
@@ -153,53 +156,56 @@ void StereoEstimation_DP(
     const int& dmin,
     int height,
     int width,
-    cv::Mat& image1, cv::Mat& image2, cv::Mat& disparities, double lambda)
+    cv::Mat& image1, cv::Mat& image2, cv::Mat& disparities, double lambda, bool debug)
 {
     int half_window_size = window_size / 2;
-
+	
     auto start = ch::high_resolution_clock::now();
-    cv::Mat dissim = cv::Mat::zeros(width, width, CV_32FC1);
+    int dwidth = width - 2*half_window_size;
+    cv::Mat dissim = cv::Mat::zeros(dwidth, dwidth, CV_32FC1);
     
     
     // for each row (scanline)
     for (int y = 0; y < height; y++) {
 	
   	std::cout
-                << "Calculating disparities for the naive approach... "
+                << "Calculating disparities for the DP approach... "
                 << std::ceil(y / static_cast<double>(height) * 100) << "%\r"
                 << std::flush;
 	// dissimilarity(i, j) for each (i, j)		
 	#pragma omp parallel for
-        for (int i = half_window_size; i < height - half_window_size; ++i) {
+        for (int i = half_window_size; i < width - half_window_size; ++i) {
             for (int j = half_window_size; j < width - half_window_size; j++) {
                 float sum = 0;
                 for (int u = 0 ; u <= half_window_size; u++) {
                     for (int v = 0 ; v <= half_window_size; v++) {
                         float i1 = static_cast<float>(image1.at<uchar>(y + v, i + u));
-                        float i2 = static_cast<float>(image2.at<uchar>(y + v, i + u));
+                        float i2 = static_cast<float>(image2.at<uchar>(y + v, j + u));
                         sum += std::abs(i1 - i2); // SAD
                         // sum += (i1 - i2) * (i1 - i2) // SSD
                     }
                 }
-                dissim.at<float>(i, j) = sum;
+                dissim.at<float>(i - half_window_size, j - half_window_size) = sum;
             }
         }
+	//std::cout << dissim << std::endl;
 	
 	// allocate C, M
-	cv::Mat C = cv::Mat::zeros(width, width, CV_32FC1);
-    	cv::Mat M = cv::Mat::zeros(width, width, CV_8UC1);
-	C(cv::Range(0, 1), cv::Range(0, width)) = dissim(cv::Range(0, 1), cv::Range(0, width));
-        C(cv::Range(0, width), cv::Range(0, 1)) = dissim(cv::Range(0, width), cv::Range(0, 1));
+	
+	cv::Mat C = cv::Mat::zeros(dwidth, dwidth, CV_32FC1);
+    	cv::Mat M = cv::Mat::zeros(dwidth, dwidth, CV_8UC1);
+	C(cv::Range(0, 1), cv::Range(0, dwidth)) = dissim(cv::Range(0, 1), cv::Range(0, dwidth));
+        C(cv::Range(0, dwidth), cv::Range(0, 1)) = dissim(cv::Range(0, dwidth), cv::Range(0, 1));
 	// loop over matricies
-	for (int i = 1; i < width; i++) {
-	    for (int j = 1; j < width; j++) {
+	for (int i = 1; i < dwidth; i++) {
+	    for (int j = 1; j < dwidth; j++) {
 		M.at<uint8_t>(i, j) = 0;
 		double value = C.at<float>(i-1, j-1) + dissim.at<float>(i, j);
-		if (value > C.at<float>(i-1, j) + lambda) {
+		if (value > (C.at<float>(i-1, j) + lambda)) {
 		    value = C.at<float>(i-1, j) + lambda;
 		    M.at<uint8_t>(i, j) = 1;
 		}
-		if (value > C.at<float>(i, j-1) + lambda) {	
+		if (value > (C.at<float>(i, j-1) + lambda)) {	
 		    value = C.at<float>(i, j-1) + lambda;
 		    M.at<uint8_t>(i, j) = 2;
 		}
@@ -208,16 +214,18 @@ void StereoEstimation_DP(
 	}
 	
 	// trace back
-	int j = width;
-        int i = width;
+	int j = width - 1;
+        int i = width - 1;
+	cv::Mat path = cv::Mat::zeros(dwidth, dwidth, CV_8UC1);
 	while ((j >= 0) && (i>=0)){
+	    path.at<uchar>(i, j) = 255;
 	    switch (M.at<uchar>(i, j)) {
 		case 0:
-		    disparities.at<uchar>(y, i) = std::abs(j - i);
+		    disparities.at<uchar>(y, i + half_window_size) = std::abs(j - i);
 		    i--; j--;
 		    break;
  		case 1:
-		    disparities.at<uchar>(y, i) = std::abs(j - i);
+		    disparities.at<uchar>(y, i + half_window_size) = 0;
 		    i--;
   		    break;
 		case 2:
@@ -227,7 +235,27 @@ void StereoEstimation_DP(
 		    std::cout << "Unexpected case!" << std::endl;
 		    exit(0);
 	    }
-	}		
+	}
+        if (debug) {	
+		cv::namedWindow("PATH", cv::WINDOW_AUTOSIZE);
+		cv::imshow("PATH", path);
+  	
+		cv::Mat cost_normed(C);
+		double min, max;
+		std::cout << C << std::endl;
+		cv::minMaxLoc(cost_normed, &min, &max);
+		cost_normed = cost_normed/max;
+		cv::normalize(cost_normed, cost_normed, 0, 1, cv::NORM_MINMAX);
+		cv::namedWindow("COST", cv::WINDOW_AUTOSIZE);
+		cv::imshow("COST", C);	
+			
+		cv::Mat dissim_normed;
+		cv::normalize(dissim, dissim_normed, 0, 1, cv::NORM_MINMAX);
+		cv::namedWindow("Dissim", cv::WINDOW_AUTOSIZE);
+		cv::imshow("Dissim", dissim_normed);
+		
+		cv::waitKey(0);
+	}
     }
       
     auto stop = ch::high_resolution_clock::now();
