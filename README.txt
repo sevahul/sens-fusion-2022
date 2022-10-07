@@ -1,24 +1,40 @@
+TLDR:
+```
+sudo apt-get install libjsoncpp-dev libopencv-dev python3-opencv
+mkdir build
+cd build
+cmake ..
+cd ..
+./make.sh
+# optionally: edit data/config.json file
+./run_stereo.sh
+./visualize_cloud.py
+./compare_disparities.py
+```
+
+
+
 To generate a pointcloud and a disparity image:
 ```
-./run_naive.sh [output_file] [window_size] [n_jobs]
+./run_stereo.sh [output_file [-w window_size] [-j n_jobs]]
 ```
+
 default values:
- output_file: output/output
- window_size: 3
- n_jobs: 0 (all threads)
+  -j: 16
 
-camera parameters (`focal_length`, `baseline`, `dmin`) are read from `data/config.json` file
-
+other default values are in `data/config.json` file
+parameters passed in the script from cli have more priority then the ones in json
+ 
 
 To visualize a pointcloud:
 ```
 ./visualize_cloud.py [points_file]
 ```
 default values:
- points_file: output/output9.xyz
+ points_file: output/output.xyz
 
 
-To calculate the similarity between disparities and disparitu groundtruth, run:
+To calculate the similarity between disparities and disparities groundtruth, run:
 ```
 ./compare_disparities.py
 ```
@@ -33,3 +49,8 @@ INSTALLATION on Linux:
 ```
 sudo apt-get install libjsoncpp-dev libopencv-dev python3-opencv
 ```
+
+Script `make.sh` is used to recompile the code.
+Script `mkrun.sh` is used to make and run code with parameters from the config.
+
+For "method" field of the config, either "DP" of "naive" value have to be used.

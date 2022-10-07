@@ -134,7 +134,7 @@ int main(int argc, char** argv) {
             image1, image2,
             disparities, lambda, debug);
     } else {
-       std::cerr << "Unknown method!" << std::endl;
+       std::cerr << "Unknown method!\n The method has to be either 'naive' or 'DP'" << std::endl;
        return EXIT_FAILURE;
     }
 
@@ -229,16 +229,18 @@ void StereoEstimation_DP(
 	// trace back
 	int j = dwidth - 1;
         int i = dwidth - 1;
+	int last_defined = 0;
 	cv::Mat path = cv::Mat::zeros(dwidth, dwidth, CV_8UC1);
 	while ((j >= 0) && (i>=0)){
 	    path.at<uchar>(i, j) = 255;
 	    switch (M.at<uchar>(i, j)) {
 		case 0:
 		    disparities.at<uchar>(y, i + half_window_size) = std::abs(j - i);
+		    last_defined = std::abs(j-i);
 		    i--; j--;
 		    break;
  		case 1:
-		    disparities.at<uchar>(y, i + half_window_size) = std::abs(j - i);
+		    disparities.at<uchar>(y, i + half_window_size) = 0;
 		    i--;
   		    break;
 		case 2:
