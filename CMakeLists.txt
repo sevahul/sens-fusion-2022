@@ -6,7 +6,7 @@ project( stereo_estimation )
 # packages #
 ###############
 
-FIND_PACKAGE(Boost COMPONENTS program_options REQUIRED)
+FIND_PACKAGE(Boost COMPONENTS program_options filesystem REQUIRED)
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
 
 find_package( OpenCV REQUIRED )

@@ -12,12 +12,14 @@
 #include "main.h"
 #include <cmath>
 #include <omp.h>
-#include <boost/program_options.hpp> // COMMENT IN CASE YOU DONT HAVE BOOST
+#include <boost/program_options.hpp>
+#include <boost/filesystem.hpp>
 #include <chrono>
 #include <jsoncpp/json/json.h>
 #include "progressbar.hpp"
 
 namespace po = boost::program_options;
+namespace fs = boost::filesystem;
 namespace ch = std::chrono;
 
 int main(int argc, char** argv) {
@@ -25,35 +27,64 @@ int main(int argc, char** argv) {
     ////////////////
     // Parameters //
     ////////////////
+       // Optionally set nProcessors (maximum by default)
+    int nProcessors;
+    // And window size
+    int window_size;
     
+    fs::path default_config_path ("data");
+    default_config_path /= "config.json";
+    fs::path default_output_file ("output");
+    default_output_file /= "output";
+    fs::path default_image_file ("data");
+    std::string output_file;
+    std::string config_path;
+    std::string image1_name;
+    std::string image2_name;
+
+    // Read parameters from command line (higher priority)
+    po::options_description desc("Options for stereo program");
+    desc.add_options()
+    ("help,h", "produce help message")
+    ("jobs,j", po::value<int>(& nProcessors)->default_value(omp_get_max_threads()), "Number of Threads (max by default)")
+    ("config-path,c", po::value<std::string>(& config_path)->default_value(default_config_path.string()), "Path to the congiguration file")
+    ("window-size,w", po::value<int>(& window_size), "Window Size (taken from config if not specified)")
+    ("left-image,l", po::value<std::string>(& image1_name)->default_value((default_image_file/"view0.png").string()), "Image1 name")
+    ("right-image,r", po::value<std::string>(& image2_name)->default_value((default_image_file/"view1.png").string()), "Image2 name")
+    ("output,o", po::value<std::string>(& output_file)->default_value(default_output_file.string()), "Output files template (do not add extentions)");
+   
+    po::positional_options_description p;
+    p.add("left-image", 1);
+    p.add("right-image", 1);
+    p.add("output", 1);
+    po::variables_map vm;
+    po::store(po::command_line_parser(argc, argv).
+          options(desc).positional(p).run(), vm);
+    po::notify(vm);
+    
+    if (vm.count("help")) {
+	std::cout << desc << "\n";
+	return 1;
+    }
+
+
+
+    // camera setup parameters
+    
+     
     // parameters config parser
-    std::ifstream ifs("data/config.json");
+    std::ifstream ifs(config_path);
     Json::Reader reader;
     Json::Value obj;
     reader.parse(ifs, obj);
 
-    // Optionally set nProcessors (maximum by default)
-    int nProcessors = 0;
-    // And window size
-    int default_ws = obj.isMember("window_size") ? obj["window_size"].asInt() : 3;
-    int window_size;
-
-    // Read parameters from command line (higher priority)
-    po::options_description desc("Options for my program");
-    desc.add_options()
-    ("jobs,j", po::value<int>(& nProcessors)->default_value(omp_get_max_threads()), "Number of Threads")
-    ("window-size,w", po::value<int>(& window_size)->default_value(default_ws), "Window Size");
-    po::variables_map vm;
-    po::store(po::parse_command_line(argc, argv, desc), vm);
-    po::notify(vm);
-
-    // setup njobs
-    if (!nProcessors) {
-        nProcessors = omp_get_max_threads();
+    if(!vm.count("window-size")){
+	window_size = obj.isMember("window_size") ? obj["window_size"].asInt() : 3;
     }
-    omp_set_num_threads(nProcessors);
-
-    // camera setup parameters
+    if(!vm.count("output-file")){
+	output_file = obj.isMember("output") ? obj["output"].asString() : default_output_file.string();
+    }
+    
     const double focal_length = obj.isMember("focal_length") ? obj["focal_length"].asDouble(): 3740;
     const double baseline = obj.isMember("baseline") ? obj["baseline"].asDouble(): 160;
     const bool debug = obj.isMember("debug") ? obj["debug"].asBool() : false;
@@ -67,20 +98,8 @@ int main(int argc, char** argv) {
     // Commandline arguments //
     ///////////////////////////
 
-    if (argc < 3) {
-        std::cerr << "Usage: " << argv[0] << " IMAGE1 IMAGE2 OUTPUT_FILE [-j<njobs> -w<window-size>]" << std::endl;
-        return 1;
-    }
-
-    cv::Mat image1 = cv::imread(argv[1], cv::IMREAD_GRAYSCALE);
-    cv::Mat image2 = cv::imread(argv[2], cv::IMREAD_GRAYSCALE);
-    std::string output_file;
-    if (argc > 3){
-	output_file = argv[3]; 
-    } else {
-	output_file = obj.isMember("output") ? obj["output"].asString() : "output/output";
-    }
-
+    cv::Mat image1 = cv::imread(image1_name, cv::IMREAD_GRAYSCALE);
+    cv::Mat image2 = cv::imread(image2_name, cv::IMREAD_GRAYSCALE);
 
     if (!image1.data) {
         std::cerr << "No image1 data" << std::endl;
@@ -121,6 +140,11 @@ int main(int argc, char** argv) {
     ////////////////////
 
     // Disparity image
+    
+    
+    // setup njobs
+    omp_set_num_threads(nProcessors);
+    
     cv::Mat disparities = cv::Mat::zeros(height, width, CV_8UC1);
 
     if (method=="naive") {
