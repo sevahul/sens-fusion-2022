@@ -1,56 +1,35 @@
 TLDR:
 ```
-sudo apt-get install libjsoncpp-dev libopencv-dev python3-opencv
-mkdir build
-cd build
-cmake ..
-cd ..
+sudo apt-get install libopencv-dev python3-opencv
+./mkrun.sh [options]# build, extract and visualize with default configrs
+./compare_disparities.py
+```
+To only make the project
+```
 ./make.sh
-# optionally: edit data/config.json file
-./run_stereo.sh
-./visualize_cloud.py
-./compare_disparities.py
 ```
-
-
-
-To generate a pointcloud and a disparity image:
+To only run the project with default configurations (stereo extraction + visualization):
 ```
-./run_stereo.sh [output_file [-w window_size] [-j n_jobs]]
+./run_stereo.sh [options]
 ```
-
-default values:
-  -j: 16
-
-other default values are in `data/config.json` file
-parameters passed in the script from cli have more priority then the ones in json
- 
-
-To visualize a pointcloud:
+To run stereo extraction only, use
 ```
-./visualize_cloud.py [points_file]
+./build/OpenCV_stereo [options]
 ```
-default values:
- points_file: output/output.xyz
+to describe parameters, run
+```
+./build/OpenCV_stereo --help
+```
+to visualize points from a specific file only, run
+```
+visualize_cloud.py [-o INPUT]
+```
+Parameters for `./build/OpenCV_stereo` are also set in `params.cfg` file, that is also explained in `./build/OpenCV_stereo --help` message.<br>
+Parameters passed from the cli have more priority then the ones from the config file.
 
+To calculate the similarity between naive disparities and disparities groundtruth, run:
 
-To calculate the similarity between disparities and disparities groundtruth, run:
 ```
 ./compare_disparities.py
 ```
-
-It will output the list of values for each metric. In list, values are compared for different window size (3, 5, 7, 9)
-You can see the result saved in `output/metrics.txt`
-
-
-REQUIREMENTS:
-- jsoncpp library, libboost library.
-INSTALLATION on Linux:
-```
-sudo apt-get install libjsoncpp-dev libopencv-dev python3-opencv
-```
-
-Script `make.sh` is used to recompile the code.
-Script `mkrun.sh` is used to make and run code with parameters from the config.
-
-For "method" field of the config, either "DP" of "naive" value have to be used.
+It will output the list of values for each metric. In list, values are compared for different window sizes (3, 5, 7, 9), you can see my result saved in `output/metrics.txt`.
