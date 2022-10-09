@@ -3,16 +3,18 @@
 import open3d as o3d
 import numpy as np
 import sys
+import argparse
 
 if __name__ == "__main__":
-
+    
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-o', '--output', dest="input", default="output/output")
+    args, unknown = parser.parse_known_args()
+    print(args.input)
     ## define parameters
-    filename = "output/output.xyz"
+    filename = "" + args.input + ".xyz"
     min_z = 2000
 
-    if len(sys.argv) > 1:
-        filename = sys.argv[1]
-    
     print(f"Visualising pointclout from the file {filename}...")
     ## load points
     points = np.loadtxt(filename)

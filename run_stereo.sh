@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-./build/OpenCV_stereo "$@" && ./visualize_cloud.py
+./build/OpenCV_stereo "$@" && ./visualize_cloud.py "$@"
