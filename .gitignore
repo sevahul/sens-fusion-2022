@@ -2,3 +2,6 @@ build
 data
 output
 .cache
+*.swp
+*.png
+*.xyz
