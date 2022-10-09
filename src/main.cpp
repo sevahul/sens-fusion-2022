@@ -37,6 +37,7 @@ int main(int argc, char** argv) {
     const std::string default_method = "DP";
     const double default_fulfill_occlusions = false;
     const bool default_debug = false;
+    const bool default_naming = false;
     const int default_dmin = 200;
     const int default_window_size = 1;
     const double default_lambda = 2;
@@ -51,6 +52,8 @@ int main(int argc, char** argv) {
     double baseline;
     bool fulfill_occlusions;
     bool debug;
+    bool naming_meaningful;
+    bool hide_pictures;
     std::string method;
     double lambda;
     int dmin;
@@ -69,7 +72,7 @@ int main(int argc, char** argv) {
     po::options_description command_line_options("cli options");
     command_line_options.add_options()
     ("help,h", "Produce help message")
-    ("version,v", "Get program version")
+    ("version,V", "Get program version")
     ("jobs,j", po::value<int>(& nProcessors)->default_value(omp_get_max_threads()), "Number of Threads (max by default)")
     ("config,c", po::value<std::string>(& config_path)->default_value(default_config_path.string()), "Path to the congiguration file");
 
@@ -79,6 +82,8 @@ int main(int argc, char** argv) {
     ("fulfill-occlusions,f", po::value<bool>(& fulfill_occlusions)->default_value(default_fulfill_occlusions), "To fulfill occlusions or not (for DP only)")
     ("lambda-DP,l", po::value<double>(& lambda)->default_value(default_lambda), "Lambda value (for DP only)")
     ("debug,d", po::value<bool>(& debug)->default_value(default_debug), "Dispay every step of dynamic programming")
+    ("naming-meaningful,n", po::value<bool>(& naming_meaningful)->default_value(default_naming), "Include window-size and lambda information in the output files names")
+    ("hide-pictures,H", po::value<bool>(& hide_pictures)->default_value(false), "Do not show resulting disparity image")
     ("method,m", po::value<std::string>(& method)->default_value(default_method), "Method: 'naive' or 'DP'");
   
     po::options_description hidden_common_options;
@@ -159,6 +164,10 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
     
+    if (naming_meaningful){
+    	output_file += "_l" + std::to_string(int(lambda))+ "_w" + std::to_string(window_size) + "_" + method;
+    }
+    
     
     // Set parameters that are automatic
     height = image1.size().height;
@@ -182,8 +191,10 @@ int main(int argc, char** argv) {
     
     std::cout << "-------------  IO Parameters  -------------------" << std::endl;
     std::cout << "output filename template = " << output_file << std::endl;
+    std::cout << "meaningful naming = " << naming_meaningful << std::endl;
     std::cout << "left-image filename = " << image1_name << std::endl;
     std::cout << "right-image filename = " << image2_name << std::endl;
+    std::cout << "hide-pictures = " << hide_pictures << std::endl;
     
     std::cout << "----------- Inferred Variables ------------------" << std::endl;
     std::cout << "height " << height << std::endl;
@@ -231,14 +242,13 @@ int main(int argc, char** argv) {
 
     // save / display images
     std::stringstream out1;
-    out1 << output_file << "_" << method << ".png";
+    out1 << output_file << ".png";
     cv::imwrite(out1.str(), disparities);
-
-    cv::namedWindow("Disaparities_" + method, cv::WINDOW_AUTOSIZE);
-    cv::imshow("Disaparities_" + method, disparities);
-
-    cv::waitKey(0);
-
+    if (!hide_pictures){
+    	cv::namedWindow("Disaparities_" + method, cv::WINDOW_AUTOSIZE);
+    	cv::imshow("Disaparities_" + method, disparities);
+    	cv::waitKey(0);
+    }
     return 0;
 }
 
