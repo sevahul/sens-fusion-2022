@@ -35,6 +35,7 @@ if __name__ == "__main__":
     # read gt disparity image
     output_folder = "output"
     data_folder = "data"
+    output_subfolder = "naive"
     img_gt_path = os.path.join(data_folder, "disp1.png")
     img_gt = cv2.imread(img_gt_path, cv2.IMREAD_GRAYSCALE)
 
@@ -49,7 +50,7 @@ if __name__ == "__main__":
     
     # calculate metrics
     for my_img in my_images:
-        img_path = os.path.join(output_folder, my_img)
+        img_path = os.path.join(output_folder,output_subfolder, my_img)
         img_my = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
         nccs.append(NCC(img_my, img_gt))
         mses.append(MSE(img_my, img_gt))
