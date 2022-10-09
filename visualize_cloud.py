@@ -8,11 +8,15 @@ import argparse
 if __name__ == "__main__":
     
     parser = argparse.ArgumentParser()
-    parser.add_argument('-o', '--output', dest="input", default="output/output")
+    parser.add_argument('-o', '--output', dest="input", nargs='+', default="output/output")
     args, unknown = parser.parse_known_args()
     print(args.input)
     ## define parameters
-    filename = "" + args.input + ".xyz"
+    fn = args.input
+    if isinstance(fn, list):
+        fn = fn[0]
+    if ".xyz" not in fn:
+        filename = "" + fn + ".xyz"
     min_z = 2000
 
     print(f"Visualising pointclout from the file {filename}...")

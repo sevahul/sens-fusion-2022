@@ -1,7 +1,7 @@
 TLDR:
 ```
 sudo apt-get install libopencv-dev python3-opencv
-./mkrun.sh [options]# build, extract and visualize with default configrs
+./mkrun.sh [options] #build, extract and visualize with default configrs
 ./compare_disparities.py
 ```
 To only make the project
@@ -16,11 +16,11 @@ To run stereo extraction only, use
 ```
 ./build/OpenCV_stereo [options]
 ```
-to describe parameters, run
+To describe parameters, run
 ```
 ./build/OpenCV_stereo --help
 ```
-to visualize points from a specific file only, run
+To visualize points from a specific file only, run
 ```
 visualize_cloud.py [-o INPUT]
 ```
