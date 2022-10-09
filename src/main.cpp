@@ -76,21 +76,21 @@ int main(int argc, char** argv) {
     po::options_description common_options("Options that can be set both in cli and in config");
     common_options.add_options()
     ("window-size,w", po::value<int>(& window_size)->default_value(default_window_size), "Window Size (taken from config if not specified)")
-    ("fulfill_occlusions,f", po::value<bool>(& fulfill_occlusions)->default_value(default_fulfill_occlusions), "To fulfill occlusions or not");
+    ("fulfill-occlusions,f", po::value<bool>(& fulfill_occlusions)->default_value(default_fulfill_occlusions), "To fulfill occlusions or not (for DP only)")
+    ("lambda-DP,l", po::value<double>(& lambda)->default_value(default_lambda), "Lambda value (for DP only)")
+    ("debug,d", po::value<bool>(& debug)->default_value(default_debug), "Dispay every step of dynamic programming")
+    ("method,m", po::value<std::string>(& method)->default_value(default_method), "Method: 'naive' or 'DP'");
   
     po::options_description hidden_common_options;
     hidden_common_options.add_options()
-    ("left-image,l", po::value<std::string>(& image1_name)->default_value((default_image_file/"view0.png").string()), "Image1 name")
-    ("right-image,r", po::value<std::string>(& image2_name)->default_value((default_image_file/"view1.png").string()), "Image2 name")
+    ("left-image", po::value<std::string>(& image1_name)->default_value((default_image_file/"view0.png").string()), "Image1 name")
+    ("right-image", po::value<std::string>(& image2_name)->default_value((default_image_file/"view1.png").string()), "Image2 name")
     ("output,o", po::value<std::string>(& output_file)->default_value(default_output_file.string()), "Output files template (do not add extentions)");
          
     po::options_description config_only_options("Configuration options");
     config_only_options.add_options()
     ("dmin", po::value<int>(& dmin)->default_value(default_dmin), "Dmin value due to the image cropping")
-    ("debug", po::value<bool>(& debug)->default_value(default_debug), "Dispay every step of dynamic programming")
     ("focal-length", po::value<double>(& focal_length)->default_value(default_focal_length), "Focal length")
-    ("method", po::value<std::string>(& method)->default_value(default_method), "Method: 'naive' or 'DP'")
-    ("lambda-DP", po::value<double>(& lambda)->default_value(default_lambda), "Lambda value for dynamic programming")
     ("baseline", po::value<double>(& baseline)->default_value(default_baseline), "Baseline");
  
     po::positional_options_description p;

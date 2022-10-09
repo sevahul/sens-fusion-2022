@@ -34,7 +34,8 @@ if __name__ == "__main__":
     
     # read gt disparity image
     output_folder = "output"
-    img_gt_path = os.path.join(output_folder, "disp1.png")
+    data_folder = "data"
+    img_gt_path = os.path.join(data_folder, "disp1.png")
     img_gt = cv2.imread(img_gt_path, cv2.IMREAD_GRAYSCALE)
 
     # list of previously calculated disparity images for each window size
