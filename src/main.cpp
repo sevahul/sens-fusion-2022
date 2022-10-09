@@ -169,8 +169,8 @@ int main(int argc, char** argv) {
     std::cout << "window_size = " << window_size << std::endl;  
     std::cout << "method = " << method << std::endl;
     if (method == "DP"){ 
-    	std::cout << "lambda = " << (int)(lambda/window_size/window_size) << std::endl;
-    	std::cout << "lambda*window_size^2 = " << lambda << std::endl;
+    	std::cout << "lambda = " << lambda << std::endl;
+    	std::cout << "lambda*window_size^2 = " << lambda * window_size * window_size << std::endl;
 	std::cout << "debug = " << debug << std::endl; 
 	std::cout << "fulfill_occlusions = " << fulfill_occlusions << std::endl; 
     }
@@ -252,7 +252,7 @@ void StereoEstimation_DP(
 {
     int half_window_size = window_size / 2;
     int dwidth = width - 2*half_window_size; // width of matchable image region
-    
+    double lambda_used = lambda * window_size * window_size; // to compensate the amout of residuals 
     //measure execution time
     auto start = ch::high_resolution_clock::now();
     
@@ -300,13 +300,13 @@ void StereoEstimation_DP(
 		M.at<uint8_t>(i, j) = 0;
 		double value = C.at<float>(i-1, j-1) + dissim.at<float>(i, j);
                 // right occlusion
-		if (value > (C.at<float>(i-1, j) + lambda)) {
-		    value = C.at<float>(i-1, j) + lambda;
+		if (value > (C.at<float>(i-1, j) + lambda_used)) {
+		    value = C.at<float>(i-1, j) + lambda_used;
 		    M.at<uint8_t>(i, j) = 1;
 		}
 		// left occlusion
-		if (value > (C.at<float>(i, j-1) + lambda)) {	
-		    value = C.at<float>(i, j-1) + lambda;
+		if (value > (C.at<float>(i, j-1) + lambda_used)) {	
+		    value = C.at<float>(i, j-1) + lambda_used;
 		    M.at<uint8_t>(i, j) = 2;
 		}
 		// set the value
