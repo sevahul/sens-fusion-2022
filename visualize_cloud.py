@@ -4,13 +4,13 @@ import open3d as o3d
 import numpy as np
 import sys
 import argparse
+import os
 
 if __name__ == "__main__":
     
     parser = argparse.ArgumentParser()
-    parser.add_argument('-o', '--output', dest="input", nargs='+', default="output/output")
+    parser.add_argument('-o', '--output', dest="input", nargs='+', default=os.path.join("output", "DP", "output"))
     args, unknown = parser.parse_known_args()
-    print(args.input)
     ## define parameters
     fn = args.input
     if isinstance(fn, list):

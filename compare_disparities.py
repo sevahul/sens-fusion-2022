@@ -40,10 +40,10 @@ if __name__ == "__main__":
     img_gt = cv2.imread(img_gt_path, cv2.IMREAD_GRAYSCALE)
 
     # list of previously calculated disparity images for each window size
-    my_images = ["output3_naive.png",
-                 "output5_naive.png", 
-                 "output7_naive.png", 
-                 "output9_naive.png"]
+    my_images = ["output_w3_naive.png",
+                 "output_w5_naive.png", 
+                 "output_w7_naive.png", 
+                 "output_w9_naive.png"]
     nccs = []
     mses = []
     ssims = []

@@ -165,7 +165,10 @@ int main(int argc, char** argv) {
     }
     
     if (naming_meaningful){
-    	output_file += "_l" + std::to_string(int(lambda))+ "_w" + std::to_string(window_size) + "_" + method;
+	if (method == "DP"){
+	    output_file += "_l" + std::to_string(int(lambda));
+	}
+    	output_file += "_w" + std::to_string(window_size) + "_" + method;
     }
     
     

@@ -26,10 +26,12 @@ visualize_cloud.py [-o INPUT]
 ```
 Parameters for `./build/OpenCV_stereo` are also set in `params.cfg` file, that is also explained in `./build/OpenCV_stereo --help` message.<br>
 Parameters passed from the cli have more priority than the ones from the config file.
-To estimate the `DP` method performance with different values of `window-size` and `lambda` parameters, run:
+To estimate the `DP` method performance versus `naive` method with different values of `window-size` and `lambda` parameters, run:
 ```
 ./estimate_method.py
 ```
+Check out `--help` option of the script to see the available metrics and usage. <br>
+My results can be seen in the `output/comparison.txt` file. <br>
 You can optionally change the values that you want to check inside the script. <br>
 
 For the `naive` method, there is another old script:
