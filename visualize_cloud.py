@@ -12,7 +12,8 @@ if __name__ == "__main__":
 
     if len(sys.argv) > 1:
         filename = sys.argv[1]
-
+    
+    print(f"Visualising pointclout from the file {filename}...")
     ## load points
     points = np.loadtxt(filename)
 
