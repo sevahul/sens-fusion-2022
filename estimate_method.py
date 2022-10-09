@@ -47,15 +47,3 @@ if __name__ == "__main__":
             df.loc[('window-size', w), ('lambda', l)] = SSIM(image, img_gt)
             print(df, "\n")
     exit(0)
-    # calculate metrics
-    for my_img in my_images:
-        img_path = os.path.join(output_folder,output_subfolder, my_img)
-        img_my = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
-        nccs.append(NCC(img_my, img_gt))
-        mses.append(MSE(img_my, img_gt))
-        ssims.append(SSIM(img_my, img_gt))
-    print("w_size:\t   3    5    7    9")
-    print("NCC:\t", np.round(nccs, 2))
-    print("MSE:\t", np.round(mses, 2))
-    print("SSIM:\t", np.round(ssims, 2))
- 
