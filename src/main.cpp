@@ -2,8 +2,6 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
-#include <jsoncpp/json/reader.h>
-#include <jsoncpp/json/value.h>
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <ostream>
@@ -16,7 +14,6 @@
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
 #include <chrono>
-//#include <jsoncpp/json/json.h>
 #include "progressbar.hpp"
 
 namespace po = boost::program_options;
