@@ -61,13 +61,15 @@ if __name__ == "__main__":
     
     print("Compute the normal of the downsampled point cloud ...")
     downpcd = cl.voxel_down_sample(voxel_size=5)
-    o3d.geometry.PointCloud.estimate_normals(
-        downpcd,
+    downpcd.estimate_normals(
         search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=40,
                                                           max_nn=50))
+    o3d.io.write_point_cloud("output/3d/pointcloud.ply", downpcd, write_ascii=True, compressed=False)
+
     downpcd.orient_normals_towards_camera_location()
     print("Compute 3d-mesh of the downsampled point cloud ...")
     mesh = get_mesh_ball(downpcd)
+    o3d.io.write_triangle_mesh("output/3d/mesh.ply", mesh, write_ascii=True, compressed=False)
     # mesh = get_mesh_poisson(downpcd)
 
     ## visualize results
