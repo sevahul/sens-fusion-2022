@@ -12,6 +12,7 @@ from skimage.metrics import mean_squared_error
 import os
 import pandas as pd
 import argparse
+from compare_disparities import NCC, MSE, SSIM
 
 def NCC(img1, img2): 
     img_my_ar = img1.flatten()
@@ -51,10 +52,10 @@ if __name__ == "__main__":
     print(metric_name)
 
     # read gt disparity image
-    output_folder_list = ["output", "DP"]
+    output_folder_list = ["output", "DP", "Art"]
     output_folder = os.path.join(*output_folder_list)
     output_template_name = "output"
-    data_folder = "data"
+    data_folder = os.path.join("data", "Art")
     img_gt_path = os.path.join(data_folder, "disp1.png")
     img_gt = cv2.imread(img_gt_path, cv2.IMREAD_GRAYSCALE)
 

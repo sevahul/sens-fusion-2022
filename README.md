@@ -22,7 +22,7 @@ To describe parameters:
 ```
 To visualize points from a specific file only:
 ```
-visualize_cloud.py [-o INPUT]
+./visualize_cloud.py [-o INPUT]
 ```
 Parameters for `./build/OpenCV_stereo` are also set in `params.cfg` file, that is also explained in `./build/OpenCV_stereo --help` message.<br>
 Parameters passed from the cli have more priority than the ones from the config file.
