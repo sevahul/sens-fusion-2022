@@ -8,11 +8,13 @@ import os
 
 if __name__ == "__main__":
     
+    # print(dir(o3d.geometry.PointCloud))
+    # exit(0)
     parser = argparse.ArgumentParser()
-    parser.add_argument('-o', '--output', dest="input", nargs='+', default=os.path.join("output", "DP", "output"))
+    parser.add_argument('-f', '--file', dest="input_file", nargs='?', default=os.path.join("output", "DP", "output"))
     args, unknown = parser.parse_known_args()
     ## define parameters
-    fn = args.input
+    fn = args.input_file
     if isinstance(fn, list):
         fn = fn[0]
     if ".xyz" not in fn:
@@ -36,6 +38,15 @@ if __name__ == "__main__":
     #cl, ind = voxel_down_pcd.remove_statistical_outlier(nb_neighbors=50, std_ratio=.2) # statistical filter
 
     ## visualize points
-    o3d.visualization.draw_geometries([cl], point_show_normal=True)
+    #o3d.visualization.draw_geometries([cl], point_show_normal=True)
+    print("Recompute the normal of the downsampled point cloud")
+    
+    downpcd = cl.voxel_down_sample(voxel_size=10)
+    o3d.geometry.PointCloud.estimate_normals(
+        downpcd,
+        search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=40,
+                                                          max_nn=50))
+    downpcd.orient_normals_towards_camera_location()
+    o3d.visualization.draw_geometries([downpcd.voxel_down_sample(voxel_size=10)])
 
 
