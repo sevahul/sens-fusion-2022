@@ -6,6 +6,27 @@ import sys
 import argparse
 import os
 
+def get_mesh_ball(downpcd):
+    distances = downpcd.compute_nearest_neighbor_distance()
+    avg_dist = np.mean(distances)
+    radius = 3 * avg_dist
+    radii = np.array([radius, radius*3])
+    rec_mesh = o3d.geometry.TriangleMesh.create_from_point_cloud_ball_pivoting(
+        downpcd, o3d.utility.DoubleVector(radii))
+    dec_mesh = rec_mesh.simplify_quadric_decimation(10000)
+    dec_mesh.remove_degenerate_triangles()
+    dec_mesh.remove_duplicated_triangles()
+    dec_mesh.remove_duplicated_vertices()
+    dec_mesh.remove_non_manifold_edges()
+    return dec_mesh
+
+def get_mesh_poisson(pcd):
+    poisson_mesh = o3d.geometry.TriangleMesh.create_from_point_cloud_poisson(pcd, depth=8, width=0, scale=1.1, linear_fit=True)[0]
+    bbox = pcd.get_axis_aligned_bounding_box()
+    p_mesh_crop = poisson_mesh.crop(bbox)
+    return p_mesh_crop
+
+
 if __name__ == "__main__":
     
     # print(dir(o3d.geometry.PointCloud))
@@ -14,11 +35,11 @@ if __name__ == "__main__":
     parser.add_argument('-f', '--file', dest="input_file", nargs='?', default=os.path.join("output", "DP", "output"))
     args, unknown = parser.parse_known_args()
     ## define parameters
-    fn = args.input_file
-    if isinstance(fn, list):
-        fn = fn[0]
-    if ".xyz" not in fn:
-        filename = "" + fn + ".xyz"
+    filename = args.input_file
+    if isinstance(filename, list):
+        filename = filename[0]
+    if ".xyz" not in filename:
+        filename = "" + filename + ".xyz"
     min_z = 2000
 
     print(f"Visualising pointclout from the file {filename}...")
@@ -37,16 +58,27 @@ if __name__ == "__main__":
     cl, ind = voxel_down_pcd.remove_radius_outlier(nb_points=15, radius=5) # radius filter
     #cl, ind = voxel_down_pcd.remove_statistical_outlier(nb_neighbors=50, std_ratio=.2) # statistical filter
 
-    ## visualize points
-    #o3d.visualization.draw_geometries([cl], point_show_normal=True)
-    print("Recompute the normal of the downsampled point cloud")
     
-    downpcd = cl.voxel_down_sample(voxel_size=10)
+    print("Compute the normal of the downsampled point cloud ...")
+    downpcd = cl.voxel_down_sample(voxel_size=5)
     o3d.geometry.PointCloud.estimate_normals(
         downpcd,
         search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=40,
                                                           max_nn=50))
     downpcd.orient_normals_towards_camera_location()
-    o3d.visualization.draw_geometries([downpcd.voxel_down_sample(voxel_size=10)])
+    print("Compute 3d-mesh of the downsampled point cloud ...")
+    mesh = get_mesh_ball(downpcd)
+    # mesh = get_mesh_poisson(downpcd)
+
+    ## visualize results
+    ## points
+    o3d.visualization.draw_geometries([downpcd])
+    ## normals
+    o3d.visualization.draw_geometries([downpcd.voxel_down_sample(voxel_size=10)], point_show_normal=True)
+    ## 3d-mesh
+    o3d.visualization.draw_geometries([downpcd.voxel_down_sample(voxel_size=20), mesh])
+
+
+
 
 
