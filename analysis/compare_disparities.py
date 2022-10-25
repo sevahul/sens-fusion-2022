@@ -10,23 +10,28 @@ from skimage.metrics import mean_squared_error
 import os
 
 def NCC(img1, img2): 
-    img_my_ar = img1.flatten()
-
-    img_gt_ar = img2.flatten()
-    img_my_ar_norm = (img_my_ar - img_my_ar.mean())/np.linalg.norm(img_my_ar)
-    img_gt_ar_norm = (img_gt_ar - img_gt_ar.mean())/np.linalg.norm(img_gt_ar)
-    cor = np.corrcoef(img_gt_ar_norm, img_my_ar_norm)
+    img1_float = img_as_float(img1)
+    img2_float = img_as_float(img2)
+    img1_float = (img1_float - img1_float.mean())/np.linalg.norm(img1_float)
+    img2_float = (img2_float - img2_float.mean())/np.linalg.norm(img2_float)
+    cor = np.corrcoef(img1_float, img2_float)
     return cor[1,0]
 
-def MSE(img1, img2):
+def MSE(img1, img2, normed = True):
     img1_float = img_as_float(img1)
     img2_float = img_as_float(img2)
+    if normed:
+        img1_float = (img1_float - img1_float.mean())/np.linalg.norm(img1_float)
+        img2_float = (img2_float - img2_float.mean())/np.linalg.norm(img2_float)
     mse_score = mean_squared_error(img1_float, img2_float)
     return mse_score
-     
-def SSIM(img1, img2):
+ 
+def SSIM(img1, img2, normed = True):
     img1_float = img_as_float(img1)
     img2_float = img_as_float(img2)
+    if normed:
+        img1_float = (img1_float - img1_float.mean())/np.linalg.norm(img1_float)
+        img2_float = (img2_float - img2_float.mean())/np.linalg.norm(img2_float)
     ssim_score = ssim(img1_float, img2_float, data_range=img1_float.max() - img1_float.min())
     return ssim_score
 

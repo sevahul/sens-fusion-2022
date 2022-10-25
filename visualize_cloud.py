@@ -32,7 +32,7 @@ if __name__ == "__main__":
     # print(dir(o3d.geometry.PointCloud))
     # exit(0)
     parser = argparse.ArgumentParser()
-    parser.add_argument('-f', '--file', dest="input_file", nargs='?', default=os.path.join("output", "DP", "output"))
+    parser.add_argument('-f', '--file', dest="input_file", nargs='?', default=os.path.join("output", "DP", "Art", "output"))
     args, unknown = parser.parse_known_args()
     ## define parameters
     filename = args.input_file

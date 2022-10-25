@@ -14,25 +14,6 @@ import pandas as pd
 import argparse
 from compare_disparities import NCC, MSE, SSIM
 
-def NCC(img1, img2): 
-    img_my_ar = img1.flatten()
-    img_gt_ar = img2.flatten()
-    img_my_ar_norm = (img_my_ar - img_my_ar.mean())/np.linalg.norm(img_my_ar)
-    img_gt_ar_norm = (img_gt_ar - img_gt_ar.mean())/np.linalg.norm(img_gt_ar)
-    cor = np.corrcoef(img_gt_ar_norm, img_my_ar_norm)
-    return cor[1,0]
-
-def MSE(img1, img2):
-    img1_float = img_as_float(img1)
-    img2_float = img_as_float(img2)
-    mse_score = mean_squared_error(img1_float, img2_float)
-    return mse_score
- 
-def SSIM(img1, img2):
-    img1_float = img_as_float(img1)
-    img2_float = img_as_float(img2)
-    ssim_score = ssim(img1_float, img2_float, data_range=img1_float.max() - img1_float.min())
-    return ssim_score
 
 if __name__ == "__main__":
     
