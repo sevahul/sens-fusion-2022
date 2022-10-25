@@ -1,0 +1,482 @@
+{
+    "output/DP/Art/output_l1_w1_DP.png": {
+        "SSIM": 0.23326537776245715,
+        "MSE": 0.1864258758660432,
+        "NCC": 0.34310199881253606
+    },
+    "output/DP/Art/output_l3_w1_DP.png": {
+        "SSIM": 0.37666790073095857,
+        "MSE": 0.06486108627470268,
+        "NCC": 0.6124410851969693
+    },
+    "output/DP/Art/output_l5_w1_DP.png": {
+        "SSIM": 0.5218761335614107,
+        "MSE": 0.055099935937228096,
+        "NCC": 0.6822052586293958
+    },
+    "output/DP/Art/output_l7_w1_DP.png": {
+        "SSIM": 0.5693852278525375,
+        "MSE": 0.052734707044313156,
+        "NCC": 0.6304021084085897
+    },
+    "output/DP/Art/output_l9_w1_DP.png": {
+        "SSIM": 0.5865453284520717,
+        "MSE": 0.05192598544920741,
+        "NCC": 0.8839693156178242
+    },
+    "output/DP/Reindeer/output_l1_w1_DP.png": {
+        "SSIM": 0.27688543956835693,
+        "MSE": 0.24501293042255656,
+        "NCC": 0.4197430996499625
+    },
+    "output/DP/Reindeer/output_l3_w1_DP.png": {
+        "SSIM": 0.5371477913510231,
+        "MSE": 0.05115224946304486,
+        "NCC": 0.753989136833063
+    },
+    "output/DP/Reindeer/output_l5_w1_DP.png": {
+        "SSIM": 0.5794369887320083,
+        "MSE": 0.04313371754236274,
+        "NCC": 0.8162927987641577
+    },
+    "output/DP/Reindeer/output_l7_w1_DP.png": {
+        "SSIM": 0.6308749035283797,
+        "MSE": 0.041631566068704697,
+        "NCC": 0.850633385396654
+    },
+    "output/DP/Reindeer/output_l9_w1_DP.png": {
+        "SSIM": 0.6508016011592028,
+        "MSE": 0.04101545887152854,
+        "NCC": 0.854587611910052
+    },
+    "output/DP/Laundry/output_l1_w1_DP.png": {
+        "SSIM": 0.13078382780311243,
+        "MSE": 0.2391362519990674,
+        "NCC": 0.25655189160036423
+    },
+    "output/DP/Laundry/output_l3_w1_DP.png": {
+        "SSIM": 0.4056317425297184,
+        "MSE": 0.05738311025782879,
+        "NCC": 0.6211393105548374
+    },
+    "output/DP/Laundry/output_l5_w1_DP.png": {
+        "SSIM": 0.5725757530904171,
+        "MSE": 0.03977128233104496,
+        "NCC": 0.7859473319246664
+    },
+    "output/DP/Laundry/output_l7_w1_DP.png": {
+        "SSIM": 0.5965546416779275,
+        "MSE": 0.03454785303227237,
+        "NCC": 0.8139968042975797
+    },
+    "output/DP/Laundry/output_l9_w1_DP.png": {
+        "SSIM": 0.6176373163358785,
+        "MSE": 0.03274199031644209,
+        "NCC": 0.9209397937690966
+    },
+    "output/DP/Dolls/output_l1_w1_DP.png": {
+        "SSIM": 0.2765439783394396,
+        "MSE": 0.15168033580209508,
+        "NCC": 0.2259497534822496
+    },
+    "output/DP/Dolls/output_l3_w1_DP.png": {
+        "SSIM": 0.4565014843290286,
+        "MSE": 0.04077534606801224,
+        "NCC": 0.3452646616153834
+    },
+    "output/DP/Dolls/output_l5_w1_DP.png": {
+        "SSIM": 0.6267144321952671,
+        "MSE": 0.03130011850112284,
+        "NCC": 0.4851843894256833
+    },
+    "output/DP/Dolls/output_l7_w1_DP.png": {
+        "SSIM": 0.6445812098507313,
+        "MSE": 0.02853577412094013,
+        "NCC": 0.503678934934003
+    },
+    "output/DP/Dolls/output_l9_w1_DP.png": {
+        "SSIM": 0.6728420165186215,
+        "MSE": 0.027304479818656635,
+        "NCC": 0.49644257323055985
+    },
+    "output/DP/Moebius/output_l1_w1_DP.png": {
+        "SSIM": 0.1905804023296443,
+        "MSE": 0.32732477965182355,
+        "NCC": -0.030173927108558308
+    },
+    "output/DP/Moebius/output_l3_w1_DP.png": {
+        "SSIM": 0.41797905137613567,
+        "MSE": 0.053975497683773695,
+        "NCC": 0.04512139878549334
+    },
+    "output/DP/Moebius/output_l5_w1_DP.png": {
+        "SSIM": 0.6083695424126027,
+        "MSE": 0.03907418604174712,
+        "NCC": 0.19661578850901607
+    },
+    "output/DP/Moebius/output_l7_w1_DP.png": {
+        "SSIM": 0.666395602217549,
+        "MSE": 0.03526577818061051,
+        "NCC": 0.39333948489549597
+    },
+    "output/DP/Moebius/output_l9_w1_DP.png": {
+        "SSIM": 0.690818684807229,
+        "MSE": 0.03391087522501276,
+        "NCC": 0.6133906389123334
+    },
+    "output/DP/Books/output_l1_w1_DP.png": {
+        "SSIM": 0.19100970896604413,
+        "MSE": 0.2869839868469677,
+        "NCC": 0.5309127193048698
+    },
+    "output/DP/Books/output_l3_w1_DP.png": {
+        "SSIM": 0.5191449089528647,
+        "MSE": 0.06776772355633004,
+        "NCC": 0.30359674788256985
+    },
+    "output/DP/Books/output_l5_w1_DP.png": {
+        "SSIM": 0.5238825721217457,
+        "MSE": 0.04477013023025651,
+        "NCC": 0.4887214377881666
+    },
+    "output/DP/Books/output_l7_w1_DP.png": {
+        "SSIM": 0.6120988252227417,
+        "MSE": 0.035843513558631024,
+        "NCC": 0.6038527179986615
+    },
+    "output/DP/Books/output_l9_w1_DP.png": {
+        "SSIM": 0.6491914254040754,
+        "MSE": 0.03132714961347907,
+        "NCC": 0.6125999906187338
+    },
+    "output/naive/Art/output_w9_naive.png": {
+        "SSIM": 0.25628666072989054,
+        "MSE": 0.28917590813439187,
+        "NCC": 0.7806644051722365
+    },
+    "output/naive/Reindeer/output_w9_naive.png": {
+        "SSIM": 0.3668397251170944,
+        "MSE": 0.3073863526778879,
+        "NCC": 0.6292526955776312
+    },
+    "output/naive/Laundry/output_w9_naive.png": {
+        "SSIM": 0.18333459415772577,
+        "MSE": 0.3674998028672231,
+        "NCC": 0.7534802429404803
+    },
+    "output/naive/Dolls/output_w9_naive.png": {
+        "SSIM": 0.5672108501002682,
+        "MSE": 0.18547519875354232,
+        "NCC": 0.7820137691927057
+    },
+    "output/naive/Moebius/output_w9_naive.png": {
+        "SSIM": 0.41387684039912903,
+        "MSE": 0.2566278262917182,
+        "NCC": 0.38117016428957984
+    },
+    "output/naive/Books/output_w9_naive.png": {
+        "SSIM": 0.626549557758461,
+        "MSE": 0.192317127246272,
+        "NCC": 0.879312073954875
+    },
+    "output/naive/Art/output_w1_naive.png": {
+        "SSIM": -0.006165285668623154,
+        "MSE": 2.653421467315315e-07,
+        "NCC": -0.015278404999672352
+    },
+    "output/naive/Art/output_w3_naive.png": {
+        "SSIM": -0.01020503461015191,
+        "MSE": 3.509941650058135e-07,
+        "NCC": 0.04675321182255093
+    },
+    "output/naive/Art/output_w5_naive.png": {
+        "SSIM": 0.01613105786520733,
+        "MSE": 3.478273943852053e-07,
+        "NCC": 0.09013173765076585
+    },
+    "output/naive/Art/output_w7_naive.png": {
+        "SSIM": 0.1288569410986258,
+        "MSE": 3.192054663573874e-07,
+        "NCC": 0.1311658173181377
+    },
+    "output/naive/Reindeer/output_w1_naive.png": {
+        "SSIM": 0.01041590627382132,
+        "MSE": 2.676553007242777e-07,
+        "NCC": 0.05576102553654473
+    },
+    "output/naive/Reindeer/output_w3_naive.png": {
+        "SSIM": 0.0005623704069769326,
+        "MSE": 3.7398703888318784e-07,
+        "NCC": 0.041746197074985836
+    },
+    "output/naive/Reindeer/output_w5_naive.png": {
+        "SSIM": 0.05506403041091941,
+        "MSE": 3.764851601111323e-07,
+        "NCC": 0.12572548978398831
+    },
+    "output/naive/Reindeer/output_w7_naive.png": {
+        "SSIM": 0.19587067611923362,
+        "MSE": 3.4620510310401866e-07,
+        "NCC": 0.2012564326969243
+    },
+    "output/naive/Laundry/output_w1_naive.png": {
+        "SSIM": -0.006787850028748514,
+        "MSE": 2.7599104760905185e-07,
+        "NCC": 0.024591783155319537
+    },
+    "output/naive/Laundry/output_w3_naive.png": {
+        "SSIM": -0.007703513769383518,
+        "MSE": 3.8459786877984877e-07,
+        "NCC": 0.007922101280348913
+    },
+    "output/naive/Laundry/output_w5_naive.png": {
+        "SSIM": 0.015975180509941685,
+        "MSE": 3.985705038208692e-07,
+        "NCC": 0.03216054040689781
+    },
+    "output/naive/Laundry/output_w7_naive.png": {
+        "SSIM": 0.09232934197214783,
+        "MSE": 3.86117501920599e-07,
+        "NCC": 0.06807356788440541
+    },
+    "output/naive/Dolls/output_w1_naive.png": {
+        "SSIM": 0.0020265717721567314,
+        "MSE": 2.4396931101002746e-07,
+        "NCC": 0.06644177851056553
+    },
+    "output/naive/Dolls/output_w3_naive.png": {
+        "SSIM": 0.0026681725841504454,
+        "MSE": 3.2717642569532304e-07,
+        "NCC": 0.15938024899779435
+    },
+    "output/naive/Dolls/output_w5_naive.png": {
+        "SSIM": 0.06371498344011728,
+        "MSE": 2.8181860052775613e-07,
+        "NCC": 0.28180498335511583
+    },
+    "output/naive/Dolls/output_w7_naive.png": {
+        "SSIM": 0.3364702112908701,
+        "MSE": 2.2321133315846895e-07,
+        "NCC": 0.36662125533186296
+    },
+    "output/naive/Moebius/output_w1_naive.png": {
+        "SSIM": 0.004107690447377212,
+        "MSE": 2.534743848360813e-07,
+        "NCC": 0.013834157018071657
+    },
+    "output/naive/Moebius/output_w3_naive.png": {
+        "SSIM": -0.01263799292533578,
+        "MSE": 3.8513266866681245e-07,
+        "NCC": -0.04221509460858113
+    },
+    "output/naive/Moebius/output_w5_naive.png": {
+        "SSIM": 0.0327126980279238,
+        "MSE": 3.6033788019850624e-07,
+        "NCC": 0.09420814264294451
+    },
+    "output/naive/Moebius/output_w7_naive.png": {
+        "SSIM": 0.24306077751452457,
+        "MSE": 2.9941726334249114e-07,
+        "NCC": 0.17480319799519412
+    },
+    "output/naive/Books/output_w1_naive.png": {
+        "SSIM": 0.00874045093752504,
+        "MSE": 2.716543570207841e-07,
+        "NCC": 0.022513529920401787
+    },
+    "output/naive/Books/output_w3_naive.png": {
+        "SSIM": 0.00618899867024034,
+        "MSE": 3.502914632939232e-07,
+        "NCC": 0.11623858015879968
+    },
+    "output/naive/Books/output_w5_naive.png": {
+        "SSIM": 0.2161590508639703,
+        "MSE": 2.926864620007878e-07,
+        "NCC": 0.26370012544344457
+    },
+    "output/naive/Books/output_w7_naive.png": {
+        "SSIM": 0.47629455665783976,
+        "MSE": 2.3600551557119674e-07,
+        "NCC": 0.34056329230876964
+    },
+    "output/DP/Art/output_l9_w3_DP.png": {
+        "SSIM": 0.6088600608075757,
+        "MSE": 5.16946246559034e-08,
+        "NCC": 0.6391475402853262
+    },
+    "output/DP/Art/output_l9_w5_DP.png": {
+        "SSIM": 0.6048600700509471,
+        "MSE": 5.1834396430898015e-08,
+        "NCC": 0.6302152335880352
+    },
+    "output/DP/Art/output_l9_w7_DP.png": {
+        "SSIM": 0.6004372695460001,
+        "MSE": 5.287203805593299e-08,
+        "NCC": 0.6207297906852481
+    },
+    "output/DP/Art/output_l9_w9_DP.png": {
+        "SSIM": 0.6433609577562381,
+        "MSE": 5.5296617121028755e-08,
+        "NCC": 0.6090163511298732
+    },
+    "output/DP/Reindeer/output_l9_w3_DP.png": {
+        "SSIM": 0.7187130704074575,
+        "MSE": 4.0915309873974996e-08,
+        "NCC": 0.752714574868017
+    },
+    "output/DP/Reindeer/output_l9_w5_DP.png": {
+        "SSIM": 0.7322467657312537,
+        "MSE": 4.150958682426981e-08,
+        "NCC": 0.7488559319380342
+    },
+    "output/DP/Reindeer/output_l9_w7_DP.png": {
+        "SSIM": 0.7423449158182696,
+        "MSE": 4.265105047629317e-08,
+        "NCC": 0.7422656642644173
+    },
+    "output/DP/Reindeer/output_l9_w9_DP.png": {
+        "SSIM": 0.7477735348642894,
+        "MSE": 4.417673428486089e-08,
+        "NCC": 0.7334438913730223
+    },
+    "output/DP/Laundry/output_l9_w3_DP.png": {
+        "SSIM": 0.5714513607331153,
+        "MSE": 3.183027960193788e-08,
+        "NCC": 0.7660735398716564
+    },
+    "output/DP/Laundry/output_l9_w5_DP.png": {
+        "SSIM": 0.5739457491030008,
+        "MSE": 3.259036203172845e-08,
+        "NCC": 0.7592927934065189
+    },
+    "output/DP/Laundry/output_l9_w7_DP.png": {
+        "SSIM": 0.6600342446291825,
+        "MSE": 3.4720926403048445e-08,
+        "NCC": 0.7446941745659376
+    },
+    "output/DP/Laundry/output_l9_w9_DP.png": {
+        "SSIM": 0.6636329399117284,
+        "MSE": 3.656921443912833e-08,
+        "NCC": 0.7324999254626227
+    },
+    "output/DP/Dolls/output_l9_w3_DP.png": {
+        "SSIM": 0.7360567321738919,
+        "MSE": 2.4655937018495992e-08,
+        "NCC": 0.8128856181750385
+    },
+    "output/DP/Dolls/output_l9_w5_DP.png": {
+        "SSIM": 0.7649060471921224,
+        "MSE": 2.455224563196402e-08,
+        "NCC": 0.8128178219330421
+    },
+    "output/DP/Dolls/output_l9_w7_DP.png": {
+        "SSIM": 0.8030138639877828,
+        "MSE": 2.522323520925481e-08,
+        "NCC": 0.808206726547185
+    },
+    "output/DP/Dolls/output_l9_w9_DP.png": {
+        "SSIM": 0.8532758617755033,
+        "MSE": 2.6496356565245175e-08,
+        "NCC": 0.7997907798918444
+    },
+    "output/DP/Moebius/output_l9_w3_DP.png": {
+        "SSIM": 0.7261572487760178,
+        "MSE": 3.26846244520144e-08,
+        "NCC": 0.7186345272320215
+    },
+    "output/DP/Moebius/output_l9_w5_DP.png": {
+        "SSIM": 0.727640313497005,
+        "MSE": 3.288207109666584e-08,
+        "NCC": 0.7146620715155257
+    },
+    "output/DP/Moebius/output_l9_w7_DP.png": {
+        "SSIM": 0.8255210431423446,
+        "MSE": 3.6623819265685386e-08,
+        "NCC": 0.6889110627301063
+    },
+    "output/DP/Moebius/output_l9_w9_DP.png": {
+        "SSIM": 0.8228681792432342,
+        "MSE": 3.61396887645622e-08,
+        "NCC": 0.6897236768894184
+    },
+    "output/DP/Books/output_l9_w3_DP.png": {
+        "SSIM": 0.759071286570842,
+        "MSE": 2.457288000999021e-08,
+        "NCC": 0.8382450337033845
+    },
+    "output/DP/Books/output_l9_w5_DP.png": {
+        "SSIM": 0.8429714420445584,
+        "MSE": 2.7980827379187565e-08,
+        "NCC": 0.820272855625644
+    },
+    "output/DP/Books/output_l9_w7_DP.png": {
+        "SSIM": 0.8507047307263224,
+        "MSE": 2.9110470225414385e-08,
+        "NCC": 0.8146698268510948
+    },
+    "output/DP/Books/output_l9_w9_DP.png": {
+        "SSIM": 0.853280029826849,
+        "MSE": 3.201709951735663e-08,
+        "NCC": 0.7998320458893688
+    },
+    "output/DP/Art/output_l20_w1_DP.png": {
+        "SSIM": 0.5893980359029339,
+        "MSE": 0.05150558235538327,
+        "NCC": 0.9005134018822774
+    },
+    "output/DP/Reindeer/output_l20_w1_DP.png": {
+        "SSIM": 0.6828041315729821,
+        "MSE": 0.040646853118665525,
+        "NCC": 0.7972533868667291
+    },
+    "output/DP/Laundry/output_l20_w1_DP.png": {
+        "SSIM": 0.5649098650374301,
+        "MSE": 0.03147193625761276,
+        "NCC": 0.8998020283103275
+    },
+    "output/DP/Dolls/output_l20_w1_DP.png": {
+        "SSIM": 0.7209201132943684,
+        "MSE": 0.024639516236010687,
+        "NCC": 0.5580145991240865
+    },
+    "output/DP/Moebius/output_l20_w1_DP.png": {
+        "SSIM": 0.7041581390321758,
+        "MSE": 0.03345210331579128,
+        "NCC": 0.8849391874592224
+    },
+    "output/DP/Books/output_l20_w1_DP.png": {
+        "SSIM": 0.7379068243925089,
+        "MSE": 0.025361572611892858,
+        "NCC": 0.6410890410600438
+    },
+    "output/DP/Art/output_l50_w1_DP.png": {
+        "SSIM": 0.5388415620490966,
+        "MSE": 0.04962832654058923,
+        "NCC": 0.773714328388154
+    },
+    "output/DP/Reindeer/output_l50_w1_DP.png": {
+        "SSIM": 0.5684721430912972,
+        "MSE": 0.05603490821015312,
+        "NCC": 0.6060133201745203
+    },
+    "output/DP/Laundry/output_l50_w1_DP.png": {
+        "SSIM": 0.5017516172423558,
+        "MSE": 0.0326193990181179,
+        "NCC": 0.9435743664471594
+    },
+    "output/DP/Dolls/output_l50_w1_DP.png": {
+        "SSIM": 0.7319153559490748,
+        "MSE": 0.023157697333019756,
+        "NCC": 0.6998819808226687
+    },
+    "output/DP/Moebius/output_l50_w1_DP.png": {
+        "SSIM": 0.697949225588339,
+        "MSE": 0.03163012125297142,
+        "NCC": 0.8849391874592222
+    },
+    "output/DP/Books/output_l50_w1_DP.png": {
+        "SSIM": 0.7657740330663884,
+        "MSE": 0.025586234480540333,
+        "NCC": 0.8636327528949731
+    }
+}

@@ -17,13 +17,13 @@ def NCC(img1, img2):
     cor = np.corrcoef(img1_float, img2_float)
     return cor[1,0]
 
-def MSE(img1, img2, normed = True):
+def MSE(img1, img2, normed = True, scale_factor=1000):
     img1_float = img_as_float(img1)
     img2_float = img_as_float(img2)
     if normed:
         img1_float = (img1_float - img1_float.mean())/np.linalg.norm(img1_float)
         img2_float = (img2_float - img2_float.mean())/np.linalg.norm(img2_float)
-    mse_score = mean_squared_error(img1_float, img2_float)
+    mse_score = mean_squared_error(img1_float*scale_factor, img2_float*scale_factor)
     return mse_score
  
 def SSIM(img1, img2, normed = True):
