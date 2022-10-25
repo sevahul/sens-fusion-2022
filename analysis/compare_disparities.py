@@ -38,7 +38,7 @@ def SSIM(img1, img2, normed = True):
 if __name__ == "__main__":
     
     # read gt disparity image
-    output_folder = os.path.join("output", "naive")
+    output_folder = os.path.join("output", "naive", "Art")
     data_folder = os.path.join("data", "Art")
     img_gt_path = os.path.join(data_folder, "disp1.png")
     img_gt = cv2.imread(img_gt_path, cv2.IMREAD_GRAYSCALE)
