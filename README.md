@@ -38,3 +38,10 @@ For the `naive` method, there is an old script to compare performance for differ
 ./analysis/compare_disparities.py
 ```
 It will output the list of values for each metric. In the list, values are compared for different window sizes (3, 5, 7, 9), you can see my result saved in `output/metrics.txt`.
+## Execution results
+Result of Naive Approach(1st) and Dynamic Programming Approach(2nd) for Stereo Vision: <br>
+<img src="https://github.com/sevagul/sens-fusion-2022/blob/main/output/naive/Art/output_w9_naive.png" width="300">
+<img src="https://github.com/sevagul/sens-fusion-2022/blob/main/output/DP/Art/output_l9_w1_DP.png" width="300"><br>
+Resulting Pointclouds: <br/>
+<img src="https://github.com/sevagul/sens-fusion-2022/blob/main/output/3d/points_DP.png" width="700"><br>
+
